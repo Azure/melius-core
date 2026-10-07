@@ -1,0 +1,33 @@
+# generate requirements.txt with
+# pip-compile --allow-unsafe --generate-hashes requirements.in --output-file requirements.txt
+# needs to run each time any versions are added/updated (i.e., component governance, etc.)
+pyspark==3.5.5
+# MSAL 1.38 permits cryptography 50, required for CVE-2026-69247.
+msal==1.38.0
+requests==2.33.0
+pyodbc==5.2.0
+pandas==2.2.3
+azure-eventhub==5.14.0
+pyyaml==6.0.2
+azure-kusto-ingest==5.0.2
+azure-kusto-data==5.0.2
+openai==1.74.0
+msrest==0.7.1
+delta-spark==3.3.1
+azure-storage-file-datalake==12.20.0
+urllib3==2.7.0
+scikit-learn==1.7.2
+importlib_resources==6.5.2
+certifi==2025.4.26  # Pinned: certifi>=2026.4.22 introduces MPL-2.0 license requiring legal review
+# Floor constraint for transitive dep - closes CVE-2026-21226 in azure-core 1.34.0/1.37.0.
+# Not a direct runtime dep of melius-framework; brought in transitively by
+# azure-eventhub, azure-identity, azure-kusto-data, azure-storage-*. Floor (>=)
+# rather than exact pin so transitives can resolve a higher version naturally.
+azure-core>=1.38.0
+# Floor clears CVE-2026-69247; 50.0.1 wheels include OpenSSL 4.0.2.
+# Transitive via azure-identity / azure-kusto-* / azure-storage-* etc.; floor (>=) lets the
+# resolver pick the latest patched build.
+cryptography>=50.0.1
+# Floor - clears CVE-2026-45409 (Medium, idna.encode() DoS; mitigated in 3.14, completed in 3.15).
+# Transitive via requests / httpx / anyio / openai etc.
+idna>=3.15

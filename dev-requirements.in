@@ -1,0 +1,9 @@
+# generate dev-requirements.txt with
+# pip-compile --allow-unsafe --generate-hashes dev-requirements.in --output-file dev-requirements.txt
+# needs to run each time any versions are added/updated (i.e., component governance, etc.)
+-r requirements.in
+pytest==8.3.5
+pytest-azurepipelines==1.0.5
+pytest-cov==6.1.1
+pytest-mock==3.14.0
+flake8==7.2.0
