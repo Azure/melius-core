@@ -1,0 +1,4 @@
+# MANIFEST.in
+# Core ships pure Python only (no bundled data files).
+include README.md
+include requirements.in
