@@ -1,7 +1,7 @@
 # generate requirements.txt with
 # pip-compile --allow-unsafe --generate-hashes requirements.in --output-file requirements.txt
 # needs to run each time any versions are added/updated (i.e., component governance, etc.)
-pyspark==3.5.5
+pyspark==3.5.8
 # MSAL 1.38 permits cryptography 50, required for CVE-2026-69247.
 msal==1.38.0
 requests==2.33.0

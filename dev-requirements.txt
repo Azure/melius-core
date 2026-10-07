@@ -904,8 +904,8 @@ pyodbc==5.2.0 \
     --hash=sha256:eb0850e3e3782f57457feed297e220bb20c3e8fd7550d7a6b6bb96112bd9b6fe \
     --hash=sha256:f1f38adc47d36af392475cd4aaae0f35652fdc9e8364bf155810fe1be591336f
     # via -r requirements.in
-pyspark==3.5.5 \
-    --hash=sha256:6effc9ce98edf231f4d683fd14f7270629bf8458c628d6a2620ded4bb34f3cb9
+pyspark==3.5.8 \
+    --hash=sha256:54cca0767b21b40e3953ad1d30f8601c53abf9cbda763653289cdcfcac52313c
     # via
     #   -r requirements.in
     #   delta-spark
