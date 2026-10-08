@@ -6,7 +6,7 @@ from melius.session.JobRunSession import JobRunSession
 
 class BaseSource:
     """
-    BaseSource is an abstract class for source data handling in VM Watch Health Models.
+    BaseSource is an abstract class for source data handling in Databricks pipelines.
     """
 
     def __init__(
@@ -21,7 +21,7 @@ class BaseSource:
 
         Args:
             config: Base model data configuration
-            vmwatchSession: VMWatchSession instance for context and utilities
+            session: Session instance for context and utilities
         """
         self._lookBackDelta = lookBackDelta
         self._backFillStartDateTime = backFillStartDateTime
