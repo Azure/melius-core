@@ -33,7 +33,7 @@ class KustoSource(BaseSource):
         Initialize the KustoSource.
 
         Args:
-            session: VMWatchSession instance for context and utilities
+            session: Session instance for context and utilities
             kustoCluster: Name of the Kusto cluster
             kustoTable: Name of the Kusto table
             kustoDatabase: Name of the Kusto database

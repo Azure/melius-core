@@ -42,7 +42,7 @@ class Logger(object):
 
         Args:
             kusto_connector: A ``KustoConnector`` instance used for ingestion.
-            table_name: Target Kusto table name (e.g. ``"PrismJobLogs"``).
+            table_name: Target Kusto table name (e.g. ``"JobLogs"``).
             context: Optional dict of extra fields to include in every record
                 (e.g. ``SessionId``, ``JobName``, ``Environment``, etc.).
                 These are merged into each Kusto row.
@@ -130,7 +130,7 @@ class Logger(object):
         """Build a record from the context and ingest into Kusto.
 
         The Logger is schema-agnostic - the field names come entirely
-        from the context dict provided by the caller (e.g. PrismLogRecord).
+        from the context dict provided by the caller (e.g. a custom log record).
         Logger only sets PreciseTimeStamp, Level, and Message per call.
         Failures are swallowed so logging never breaks the running job.
 
