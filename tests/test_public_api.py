@@ -51,7 +51,6 @@ CORE_CLASS_SYMBOLS = [
     ("melius.connectors.KustoConnector", "KustoConnector"),
     ("melius.libraries.AccessToken", "AccessToken"),
     ("melius.libraries.Constants", "KnownStrings"),
-    ("melius.libraries.Constants", "KnownTableSchemas"),
     ("melius.libraries.Logger", "Logger"),
     ("melius.libraries.RegionMapping", "RegionMapping"),
     ("melius.libraries.Utility", "Utils"),

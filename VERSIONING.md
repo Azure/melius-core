@@ -1,15 +1,7 @@
 # Versioning & Release Policy — melius-core
 
-This document defines how `melius-core` is versioned, how compatibility is
-guaranteed, and how downstream consumers (team extensions and the Health-Model
-pipeline) must pin against it. It is the authoritative policy referenced by
-Task 20 of the open-sourcing plan
-(`docs/plans/melius-core-separation-and-opensourcing-plan.md`).
-
-> Scope: the **public contract** below (Sections 1-4) travels with `melius-core`
-> to its public repository. The **downstream** rules (Section 5) are how *this*
-> repo's extensions and the Health-Model pipeline consume core; they stay
-> internal.
+This document defines the version scheme, public API contract, release process,
+and dependency pinning guidance for `melius-core`.
 
 ---
 
@@ -23,20 +15,24 @@ Task 20 of the open-sourcing plan
 | **MINOR** | Backward-**compatible** functionality is added (new module, new optional parameter with a default, new source/sink). | `1.4.2 → 1.5.0` |
 | **PATCH** | Backward-compatible bug fixes only — no API surface change. | `1.4.2 → 1.4.3` |
 
-The version is the single value in `pypkg/core/__version__.py` and is bumped with
-[`bumpversion`](https://github.com/c4urself/bump2version) (never edited by hand).
+The version is the single value in [__version__.py](./__version__.py).
 
 ### First stable release
 Core currently sits at `1.0.dev0` (a pre-release marker). The first published
 build **graduates to `1.0.0`**. Until then, `1.0.devN` builds carry **no**
 compatibility guarantee and must not be pinned by exact version outside CI.
 
+Application-specific table schemas and configuration keys are not part of core.
+Applications and extension packages must define these values themselves. Consumers
+of pre-release builds must migrate those imports and attribute references before
+they adopt the cleaned core API.
+
 ---
 
 ## 2. The public API contract
 
 The compatibility promise applies to the **documented public surface** — the
-symbols locked by `pypkg/core/tests/test_public_api.py`:
+symbols locked by [tests/test_public_api.py](./tests/test_public_api.py):
 
 - `melius.init(dbutils, sparkSession, sqlContext=None)` — the entry point.
 - The public classes/enums under `melius.connectors`, `melius.libraries`,
@@ -71,30 +67,27 @@ forces action.
 
 ## 4. Release process & changelog
 
-1. Land the change (public-API tests green).
-2. Record the change under the new version in `CHANGELOG.md` (Keep-a-Changelog
-   style: Added / Changed / Deprecated / Removed / Fixed). A MAJOR entry must
-   list every breaking change and its migration note.
-3. `bumpversion {major|minor|patch}` — updates `__version__.py`, commits, tags
-   (the tag must include the changelog entry).
-4. Build the wheel (`pip wheel --no-deps --use-pep517 . -w dist`) and publish to
-   the configured index/feed.
-
-> **Action (Phase 2):** each independently-versioned package needs its own
-> `bumpversion` config. Today only the combined framework is wired
-> (`pypkg/src/.bumpversion.cfg`); when core is fed from the artifact feed,
-> add a per-package config for `pypkg/core` (and each extension) so versions
-> move independently.
+1. Land the change with public-API tests, package tests, and lint passing.
+2. Record the changes in the release notes: Added / Changed / Deprecated /
+   Removed / Fixed. A MAJOR release must list every breaking change and its
+   migration instructions.
+3. Update [__version__.py](./__version__.py) for the release in a reviewed change.
+   Tag the approved release commit.
+4. Build the wheel (`pip wheel --no-deps --use-pep517 . -w dist`) from that
+   approved commit and validate its metadata and contents.
+5. Publish the approved artifacts to public PyPI through Microsoft ESRP Release.
+   GitHub Actions provides CI only; a successful CI build is not a publication.
+6. Verify installation of the exact published version in a fresh environment.
 
 ---
 
-## 5. Downstream pinning (internal consumers)
+## 5. Dependency pinning
 
 Three consumer tiers, three pinning disciplines:
 
-### 5a. Team extensions → **compatible-range floor**
-`melius-vmwatch`, `melius-altus`, `melius-prism` declare a **compatible range**
-in their `setup.py` `install_requires`, not an exact pin — a floor at the
+### 5a. Extension packages → **compatible-range floor**
+Extension packages should declare a **compatible range** in their dependency
+metadata, not an exact pin — a floor at the
 feature they need, capped below the next MAJOR:
 
 ```python
@@ -104,26 +97,23 @@ install_requires = [
 ```
 
 Raise the floor only when the extension starts using a newer core feature; bump
-the cap only after validating against the new MAJOR. *(Extensions currently
-declare an unpinned `"melius-core"` — acceptable inside the Phase-0 combined
-wheel where one build supplies all packages; the range floor becomes required in
-Phase 2 when core is installed separately from the feed.)*
+the cap only after validating against the new MAJOR.
 
-### 5b. Health-Model pipeline → **exact pin**
-The HM build/deploy pins the **exact** core version it validated against, so a
-new core publish can never silently change a production job:
+### 5b. Reproducible deployments → **exact pin**
+A deployment should pin the **exact** core version it validated against, so a
+new core publication cannot silently change a production job:
 
 ```
 melius-core==1.5.3
 ```
 
-Bumping this pin is a deliberate, reviewed change (update the pin → CI runs the
-full staged pytest/flake8/integrity gates → merge). This is the mechanism that
-absorbs "version skew between core (feed) and extensions" (Risk in the plan doc §7).
+Bumping this pin is a deliberate, reviewed change. Update the pin, run the
+consumer's tests and integration checks, then approve the deployment.
 
-### 5c. Public/external consumers → **compatible release**
-External users are advised to pin to a compatible range (`melius-core~=1.5`,
-i.e. `>=1.5,<2`) and upgrade MAJOR deliberately after reading the changelog.
+### 5c. Applications → **compatible release**
+Applications that accept compatible updates can use `melius-core~=1.5`
+(equivalent to `>=1.5,<2`). Upgrade MAJOR deliberately after reading the
+release notes.
 
 ---
 
@@ -131,9 +121,9 @@ i.e. `>=1.5,<2`) and upgrade MAJOR deliberately after reading the changelog.
 
 | Consumer | Pin style | Example |
 | --- | --- | --- |
-| Team extension (in-repo) | compatible range (floor + MAJOR cap) | `melius-core>=1.5,<2` |
-| Health-Model pipeline | exact | `melius-core==1.5.3` |
-| External user | compatible release | `melius-core~=1.5` |
+| Extension package | compatible range (floor + MAJOR cap) | `melius-core>=1.5,<2` |
+| Reproducible deployment | exact | `melius-core==1.5.3` |
+| Application | compatible release | `melius-core~=1.5` |
 
 Core promises: **PATCH** = safe drop-in, **MINOR** = safe additive upgrade,
 **MAJOR** = review the changelog before upgrading. Downstreams never need to

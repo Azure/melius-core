@@ -33,10 +33,8 @@ setup(
     description="Core Melius framework for Azure Databricks pipelines - session management, "
                 "incremental processing, Kusto/DeltaLake/ADLS connectors, and telemetry. "
                 "Lightweight and reusable; extension packages build on top.",
-    # TODO: set public maintainer identity before first PyPI publish (ties to design-doc
-    # section 8.3 team-alias decision). Replace with the chosen Microsoft team DL, not a personal account.
-    author="TODO-maintainer",
-    author_email="TODO-maintainer@microsoft.com",
+    author="Brain Reasoning Intake & Experiences4",
+    author_email="brie@microsoft.com",
     include_package_data=True,
     packages=find_packages(dir, exclude=['tests', 'tests.*']),
     python_requires=">=3.8",

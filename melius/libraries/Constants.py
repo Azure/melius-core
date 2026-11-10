@@ -2,7 +2,6 @@
 from enum import Enum
 from datetime import timedelta
 from io import UnsupportedOperation
-from pyspark.sql.types import StructType, StructField, StringType, TimestampType, LongType
 
 
 class TableState(Enum):
@@ -141,74 +140,6 @@ class CycleTypes(Enum):
         raise ValueError(f'{cycleType} is not recognized type.')
 
 
-class KnownTableSchemas():
-    VMHealthIssuesSchema = StructType([
-        StructField("HealthIssueId", StringType(), True),
-        StructField("PreciseTimeStamp", TimestampType(), True),
-        StructField("VMId", StringType(), True),
-        StructField("NodeId", StringType(), True),
-        StructField("ContainerId", StringType(), True),
-        StructField("HealthModelId", StringType(), True),       # GUID stored as string
-        StructField("HealthModelName", StringType(), True),
-        StructField("HealthModelVersion", StringType(), True),
-        StructField("ConfidenceLevel", StringType(), True),
-        StructField("ImpactLevel", StringType(), True),
-        StructField("EventTime", TimestampType(), True),
-        StructField("State", StringType(), True),               # e.g., Healthy|UnHealthy
-        StructField("Reason", StringType(), True),
-        StructField("SignalNames", StringType(), True),         # Comma-separated signals
-        StructField("MeasurementTarget", StringType(), True),
-        StructField("CustomProperties", StringType(), True),    # JSON data
-        StructField("AppHealthVersion", StringType(), True),
-        StructField("VMWatchVersion", StringType(), True),
-        StructField("Region", StringType(), True),
-        StructField("Zone", StringType(), True),
-        StructField("DataCenter", StringType(), True),
-        StructField("Cluster", StringType(), True),
-        StructField("Subscription", StringType(), True),
-        StructField("ResourceGroup", StringType(), True),
-        StructField("ResourceId", StringType(), True),
-        StructField("OS", StringType(), True),                  # Type of OS
-        StructField("OSImage", StringType(), True),
-        StructField("VMSku", StringType(), True),
-        StructField("CohortId", StringType(), True),
-        StructField("SourceIngestionTime", TimestampType(), True),  # when row was ingested at the source
-        StructField("IssueCode", StringType(), True),  # Code for the issue
-    ])
-
-    VMHealthIssueRcaSchema = StructType([
-        StructField("HealthIssueId", StringType(), True),
-        StructField("ProcessedTime", TimestampType(), True),   # Processed time
-        StructField("PreciseTimestamp", TimestampType(), True),
-        StructField("VMId", StringType(), True),
-        StructField("NodeId", StringType(), True),
-        StructField("ContainerId", StringType(), True),
-        StructField("RCAModelId", StringType(), True),
-        StructField("RCAModelName", StringType(), True),
-        StructField("RCAModelVersion", StringType(), True),
-        StructField("Reason", StringType(), True),
-        StructField("ConfidenceLevel", StringType(), True),
-        StructField("Source", StringType(), True),
-        StructField("SourceProperties", StringType(), True),
-        StructField("SignalNames", StringType(), True),
-        StructField("MeasurementTarget", StringType(), True),
-        StructField("IssueConfidenceLevel", StringType(), True),
-        StructField("IssueReason", StringType(), True),
-        StructField("Subscription", StringType(), True),
-        StructField("Region", StringType(), True),
-        StructField("ResourceGroup", StringType(), True),
-        StructField("ResourceId", StringType(), True),
-        StructField("VMSku", StringType(), True),
-        StructField("OS", StringType(), True),
-        StructField("Component", StringType(), True),
-        StructField("ComponentVersion", StringType(), True),
-        StructField("HealthModelName", StringType(), True),
-        StructField("HealthModelVersion", StringType(), True),
-        StructField("HealthModelId", StringType(), True),
-        StructField("CorrelationCount", LongType(), True)  # how many times this issue is correlated with activities
-    ])
-
-
 class KnownStrings():
     '''
     Known strings for the system
@@ -219,13 +150,6 @@ class KnownStrings():
     IngestionEndDT = "##IngestionEndDT##"
     AzCoreRegions = "##AzCoreRegions##"
     AzCoreClusterPlaceholder = "###AzCoreCluster###"
-    DataBase_VMWatchHealth = "vmwatchhealth"
-    Table_VMHealthIssues = "VMHealthIssues"
-    Table_HealthIssues = "VMHealthIssues"  # Alias for Table_VMHealthIssues
-    Table_VMHealthIssueRca = "VMHealthrca"
-    Table_VMWatchSignalRawLogs = "VMWatchSignalRawLogs"
-    Table_VMWatchSignalLogs = "VMWatchSignalLogs"
-    Table_VMWatchSignalLogsV2 = "VMWatchSignalLogsV2"
     Storage_Container_Parquets = "parquets"
     SourceIngestionTime = "SourceIngestionTime"
     IngestionTimeMoniker = "ingestion_time()"
@@ -234,13 +158,7 @@ class KnownStrings():
     Config_AzCoreGeo = "azcoreGeo"
     Config_Environment = "environment"
     Config_Storages = "storages"
-    Config_Storages_VMWatchLogs = "vmWatchLogs"
-    Config_Storages_HealthData = "healthData"
-    Config_Storages_AzPrism = "azprism"
     Config_Kustos = "kustos"
-    Config_Kustos_AzPrism = "AzPrism"
-    Config_Kustos_HealthIssuesTable = "healthIssuesTable"
-    Config_Kustos_HealthIssueRcaTable = "healthIssueRcaTable"
     Config_Logging = "logging"
     Config_KustoCluster = "kustoCluster"
     Config_KustoDatabase = "kustoDatabase"
