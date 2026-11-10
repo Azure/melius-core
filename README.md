@@ -73,7 +73,8 @@ pip wheel --no-deps --use-pep517 . -w dist
 
 ## Versioning
 
-Version is tracked in `__version__.py` and bumped via `bumpversion`.
+Version is tracked in [__version__.py](./__version__.py). See
+[VERSIONING.md](./VERSIONING.md) for the compatibility policy and release process.
 
 ## Contributing
 
