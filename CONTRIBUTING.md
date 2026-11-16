@@ -26,3 +26,14 @@ or comments.
 - Keep pull requests focused and small. Include tests where it makes sense.
 - Ensure `flake8` and `pytest` pass locally before submitting (see the
   [README](./README.md) for build and test instructions).
+
+## GitHub Actions dependencies
+
+Pin external actions and reusable workflows to full-length commit SHAs, with the
+corresponding release tag in a comment (for example, `# v4.4.0`). Resolve tags
+against the action's upstream repository rather than copying unverified SHAs.
+
+[Dependabot](./.github/dependabot.yml) checks for GitHub Actions updates weekly,
+groups them into one pull request, and applies a seven-day cooldown before
+proposing new releases. Keep the SHA and release-tag comment in sync when updating
+an action.
